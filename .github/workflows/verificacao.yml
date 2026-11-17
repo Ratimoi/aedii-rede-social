@@ -1,0 +1,87 @@
+name: Verificação
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  verificacao:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Sintaxe
+        run: python -m compileall -q src
+
+      - name: Regras da seção 4 + docstrings
+        shell: python
+        run: |
+          """Verifica as regras da seção 4 do README em todo arquivo .py de src/.
+
+          Falha (exit 1) se encontrar:
+            - dict, set, frozenset, sorted (chamada ou uso como nome)
+            - literais/compreensões de dict e set: {}, {a: b}, {x}, {k: v for ...}
+            - .sort()
+            - import de heapq, bisect, collections
+            - import de módulo fora da biblioteca padrão (exceto módulos do próprio src/)
+            - classe ou função sem docstring (critério 2 da AVALIACAO)
+          """
+          import ast
+          import sys
+          from pathlib import Path
+
+          PASTA = Path("src").resolve()
+          NOMES_PROIBIDOS = {"dict", "set", "frozenset", "sorted"}
+          MODULOS_PROIBIDOS = {"heapq", "bisect", "collections"}
+          MODULOS_LOCAIS = {p.stem for p in PASTA.glob("*.py")}
+
+
+          def verificar(caminho):
+              erros = []
+              arvore = ast.parse(caminho.read_text(encoding="utf-8"), filename=str(caminho))
+
+              def erro(no, msg):
+                  erros.append(f"{caminho.relative_to(PASTA.parent)}:{no.lineno}: {msg}")
+
+              for no in ast.walk(arvore):
+                  if isinstance(no, ast.Name) and no.id in NOMES_PROIBIDOS:
+                      erro(no, f"uso proibido de '{no.id}'")
+                  elif isinstance(no, (ast.Dict, ast.DictComp)):
+                      erro(no, "dicionário literal/compreensão proibido")
+                  elif isinstance(no, (ast.Set, ast.SetComp)):
+                      erro(no, "set literal/compreensão proibido")
+                  elif isinstance(no, ast.Attribute) and no.attr == "sort":
+                      erro(no, "uso proibido de '.sort()'")
+                  elif isinstance(no, (ast.Import, ast.ImportFrom)):
+                      nomes = [a.name for a in no.names] if isinstance(no, ast.Import) else [no.module or ""]
+                      for nome in nomes:
+                          raiz = nome.split(".")[0]
+                          if raiz in MODULOS_PROIBIDOS:
+                              erro(no, f"import proibido de '{raiz}'")
+                          elif raiz and raiz not in sys.stdlib_module_names and raiz not in MODULOS_LOCAIS:
+                              erro(no, f"biblioteca externa '{raiz}' não é permitida")
+                  elif isinstance(no, (ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef)):
+                      if not ast.get_docstring(no):
+                          erro(no, f"'{no.name}' sem docstring")
+              return erros
+
+
+          def main():
+              erros = []
+              for caminho in sorted(PASTA.rglob("*.py")):  # ferramenta, fora de src/: pode usar sorted
+                  erros += verificar(caminho)
+              for e in erros:
+                  print(e)
+              print(f"\n{len(erros)} problema(s) encontrado(s)." if erros else "OK: nenhuma regra violada.")
+              sys.exit(1 if erros else 0)
+
+
+          if __name__ == "__main__":
+              main()
+
+      - name: Roda o main
+        run: python src/main.py
