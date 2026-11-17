@@ -41,6 +41,6 @@ def social_ler_csv(nome):
 
 def social_carregar_dados():
     """[SOCIAL-26] Carrega os três arquivos do projeto: (usuarios, seguidores, posts)."""
-    return (social_ler_csv("usuarios.csv"),
-            social_ler_csv("seguidores.csv"),
-            social_ler_csv("posts.csv"))
+    return (social_ler_csv("data/usuarios.csv"),
+            social_ler_csv("data/seguidores.csv"),
+            social_ler_csv("data/posts.csv"))
