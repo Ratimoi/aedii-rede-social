@@ -10,6 +10,7 @@ import aedlib  # biblioteca base do projeto (obrigatória - não remova)
 
 
 def main():
+    """Carrega os dados e executa os comandos da rede social."""
     usuarios, seguidores, posts = aedlib.social_carregar_dados()
     # usuarios:   [id, usuario, nome, data_cadastro]
     # seguidores: [seguidor, seguido]
