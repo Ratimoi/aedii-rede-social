@@ -1,7 +1,7 @@
 """Árvore Heap usada nos comandos TOP_SEGUIDOS, TOP_CURTIDOS (3.5) e SUGERIR (3.2)."""
 
 class HeapMaxima:
-    """Árvore Heap: possui uma única lista com todos os valores da árvore."""
+    """Árvore Heap Máxima: possui uma única lista com todos os valores da árvore."""
 
     def __init__(self):
         """
