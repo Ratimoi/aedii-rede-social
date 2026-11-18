@@ -1,10 +1,14 @@
 """
 Atividade Final - AED II - Rede Social
-Ponto de partida em Python. Leia o README.md na raiz do repositório.
 
-Este arquivo apenas carrega os dados. Todo o resto é com você:
-crie suas próprias estruturas (hash, AVL, heap, grafo, ordenação)
-em quantos arquivos quiser dentro desta pasta.
+Faz a implementação de uma rede social utilizando as mais diversas estruturas e algoritmos de dados estudados durante a disciplina em uma única implementação.
+
+Comandos aceitos:
+    BUSCAR:
+        Use BUSCAR @nome_usuario para procurar o usuário dentro da rede social
+    
+    SAIR:
+        Utilize para sair da aplicação
 """
 import aedlib  # biblioteca base do projeto (obrigatória - não remova)
 
@@ -25,9 +29,12 @@ def main():
     for usuario in usuarios:
         tabela.inserir(usuario[1], usuario)
 
-    segue = [0] * 2001
-    seguidores_qtd = [0] * 2001
-    posts_qtd = [0] * 2001
+    # Contadores indexados pelo id do usuário (ids vão de 1 a 2000).
+    # Calculados uma vez só, para o BUSCAR responder em O(1).
+
+    segue = [0] * (len(usuarios) + 1)
+    seguidores_qtd = [0] * (len(usuarios) + 1)
+    posts_qtd = [0] * (len(usuarios) + 1)
 
     for seguidor in seguidores:
         segue[int(seguidor[0])] += 1
@@ -43,17 +50,17 @@ def main():
         if not partes:
             continue
 
-        match partes[0]:
+        match partes[0].upper():
             case "SAIR":
                 break
 
             case "BUSCAR":
                 if len(partes) < 2:
-                    print("Comando inválido: insira o usuário que deseja buscar")
+                    print("Comando inválido: insira o usuário que deseja buscar\n")
                     continue
                 usuario = tabela.buscar(partes[1])
                 if usuario is None:
-                    print(f"Usuário {partes[1]} não encontrado")
+                    print(f"Usuário {partes[1]} não encontrado\n")
                 else:
                     print(f"Nome: {usuario[2]}")
                     print(f"Data de cadastro: {usuario[3]}")
