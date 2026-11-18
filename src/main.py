@@ -44,7 +44,11 @@ def main():
         posts_qtd[int(post[1])] += 1
 
     while True:
-        comando = input("> ")
+        try:
+            comando = input("> ")
+        except EOFError:
+            break
+        
         partes = comando.split()
 
         if not partes:
