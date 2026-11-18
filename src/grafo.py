@@ -33,6 +33,44 @@ class Grafo:
         self.adjacente[a].append(b)
         self.adjacente[b].append(a)
 
+    def comunidades(self):
+        """
+        Encontra as comunidades (componentes conexos) do grafo usando BFS.
+
+        Parâmetros:
+            Nenhum.
+
+        Retorno:
+            Retorna os tamanhos das comunidades.
+
+        Complexidade: O(V + E), pois cada usuário entra na fila uma vez e cada aresta é olhada duas vezes.
+        """
+        visitados = [False] * len(self.adjacente)
+        tamanhos = []
+
+        for inicio in range(1, len(self.adjacente)):
+            if visitados[inicio]:
+                continue
+
+            visitados[inicio] = True
+            fila = [inicio]
+
+            # a fila usa um índice em vez de pop(0), que é O(n)
+            frente = 0
+
+            while frente < len(fila):
+                atual = fila[frente]
+                frente += 1
+
+                for vizinho in self.adjacente[atual]:
+                    if not visitados[vizinho]:
+                        # o vizinho é marcado ao entrar na fila, para não ser adicionado duas vezes
+                        visitados[vizinho] = True
+                        fila.append(vizinho)
+
+            tamanhos.append(len(fila))
+        return tamanhos
+
 if __name__ == "__main__":
     import aedlib
 
@@ -43,3 +81,6 @@ if __name__ == "__main__":
         g.adicionar_aresta(int(s[0]), int(s[1]))
 
     print(len(g.adjacente[1]))  # tem que dar 22
+
+    t = g.comunidades()
+    print(len(t), sum(t))  # soma tem que dar 2000
