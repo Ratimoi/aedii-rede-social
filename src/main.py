@@ -6,7 +6,13 @@ Faz a implementação de uma rede social utilizando as mais diversas estruturas 
 Comandos aceitos:
     BUSCAR:
         Use BUSCAR @nome_usuario para procurar o usuário dentro da rede social
+
+    TOP_SEGUIDOS:
+        Use TOP_SEGUIDOS k (k é um número natural) para procurar os usuários mais seguidos até k
     
+    TOP_CURTIDOS:
+        Use TOP_CURTIDOS k (k é um número natural) para procurar os mais posts mais curtidos até k
+
     SAIR:
         Utilize para sair da aplicação
 """
@@ -72,6 +78,25 @@ def main():
                     print(f"Seguindo: {segue[int(usuario[0])]}")
                     print(f"Seguidores: {seguidores_qtd[int(usuario[0])]}")
                     print(f"Posts: {posts_qtd[int(usuario[0])]}\n")
+
+            case "TOP_CURTIDOS":
+                if len(partes) < 2 or not partes[1].isdigit():
+                    print("Comando inválido: insira o número de posts\n")
+                    continue
+
+                heap = HeapMaxima()
+                for p in posts:
+                    heap.inserir([int(p[3]), p])
+
+                k = int(partes[1])
+                for posicao in range(1, k + 1):
+                    item = heap.remover_maior()
+                    if item is None:
+                        break
+                    post = item[1]
+                    autor = usuarios[int(post[1]) - 1][1]
+                    print(f"{posicao}. {post[4]} — {post[3]} curtidas — {autor} — {post[2]}")
+                print()
 
             case "TOP_SEGUIDOS":
                 if len(partes) < 2 or not partes[1].isdigit():
