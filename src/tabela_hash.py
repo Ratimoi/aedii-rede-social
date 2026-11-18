@@ -9,9 +9,11 @@ class TabelaHash:
 
         Parâmetros:
             tamanho (int): tamanho da tabela hash, o ideal é que seja um número primo.
+
         Retorno:
             Retorna None por ser o construtor.
-        Complexidade: O(n) cria n listas vazias, uma por gaveta.
+
+        Complexidade: O(n), pois cria n listas vazias, uma por gaveta.
         """
         self.tamanho = tamanho
         self.gavetas = [[] for _ in range(tamanho)]
@@ -22,8 +24,10 @@ class TabelaHash:
 
         Parâmetros:
             chave (str): o @usuario.
+
         Retorno:
-            o valor armazenado e None caso não exista.
+            O valor armazenado e None caso não exista.
+
         Complexidade: O(1) em média; O(n) no pior caso (todos estejam na mesma gaveta).
         """
         gaveta = self.calcular_hash(chave, self.tamanho)
@@ -39,9 +43,11 @@ class TabelaHash:
         Parâmetros:
             chave (str): o @usuário.
             tamanho (int): tamanho da tabela hash.
+
         Retorno:
             Retorna um índice de 0 até o tamanho - 1.
-        Complexidade: O(k) onde k é o tamanho da chave.
+
+        Complexidade: O(k), onde k é o tamanho da chave.
         """
         h = 0
         for c in chave:
@@ -55,9 +61,11 @@ class TabelaHash:
         Parâmetros:
             chave (str): o @usuário.
             valor (list): lista com os dados da chave.
+
         Retorno:
             Retorna None.
-        Complexidade: O(1) pois faz um cálculo e um append.
+            
+        Complexidade: O(1), pois faz um cálculo e um append.
         """
         gaveta = self.calcular_hash(chave, self.tamanho)
         self.gavetas[gaveta].append([chave, valor])
