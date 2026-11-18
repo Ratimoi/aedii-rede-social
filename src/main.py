@@ -7,6 +7,9 @@ Comandos aceitos:
     BUSCAR:
         Use BUSCAR @nome_usuario para procurar o usuário dentro da rede social
 
+    COMUNIDADES:
+        Use COMUNIDADES para listar as comunidades (do maior para o menor) e a quantidade de usuários isolados
+
     TOP_SEGUIDOS:
         Use TOP_SEGUIDOS k (k é um número natural) para procurar os usuários mais seguidos até k
     
@@ -20,6 +23,7 @@ import aedlib  # biblioteca base do projeto (obrigatória - não remova)
 
 from tabela_hash import TabelaHash
 from heap import HeapMaxima
+from grafo import Grafo
 
 def main():
     """Carrega os dados e executa os comandos da rede social."""
@@ -43,9 +47,11 @@ def main():
     seguidores_qtd = [0] * (len(usuarios) + 1)
     posts_qtd = [0] * (len(usuarios) + 1)
 
+    grafo = Grafo(len(usuarios))
     for s in seguidores:
         segue[int(s[0])] += 1
         seguidores_qtd[int(s[1])] += 1
+        grafo.adicionar_aresta(int(s[0]), int(s[1]))
 
     for p in posts:
         posts_qtd[int(p[1])] += 1
@@ -78,6 +84,31 @@ def main():
                     print(f"Seguindo: {segue[int(usuario[0])]}")
                     print(f"Seguidores: {seguidores_qtd[int(usuario[0])]}")
                     print(f"Posts: {posts_qtd[int(usuario[0])]}\n")
+
+            case "COMUNIDADES":
+                tamanhos = grafo.comunidades()
+                isolados = 0
+                heap = HeapMaxima()
+                for t in tamanhos:
+                    if t == 1:
+                        isolados += 1
+                    else:
+                        heap.inserir(t)
+
+                ordenados = []
+                while True:
+                    t = heap.remover_maior()
+                    if t is None:
+                        break
+
+                    ordenados.append(t)
+
+                print(f"Comunidades: {len(ordenados)}")
+
+                for posicao, tamanho in enumerate(ordenados, 1):
+                    print(f"{posicao}. {tamanho} usuários")
+
+                print(f"Usuários isolados: {isolados}\n")
 
             case "TOP_CURTIDOS":
                 if len(partes) < 2 or not partes[1].isdigit():
