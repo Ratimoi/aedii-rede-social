@@ -9,8 +9,10 @@ class HeapMaxima:
 
         Parâmetros:
             Nenhum.
+
         Retorno:
             Retorna None por ser o construtor.
+
         Complexidade: O(1) cria uma única lista.
         """
         self.itens = []
@@ -21,8 +23,10 @@ class HeapMaxima:
 
         Parâmetros:
             valor (int): valor inteiro.
+            
         Retorno:
             Retorna None, apenas insere.
+
         Complexidade: O(log n), pois executa um sift-up.
         """
         self.itens.append(valor)
@@ -43,8 +47,10 @@ class HeapMaxima:
 
         Parâmetros:
             Nenhum.
+
         Retorno:
             Retorna o valor removido e None caso esteja vazia.
+            
         Complexidade: O(log n), pois executa um sift-down.
         """
         if not self.itens:
